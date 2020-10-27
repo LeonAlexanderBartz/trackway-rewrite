@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * TimeEntry
  *
- * @ORM\Table(name="timeEntries")
+ * @ORM\Table(name="time_entries")
  * @ORM\Entity(repositoryClass="App\Repository\TimeEntryRepository")
  */
 class TimeEntry extends BaseTimeEntry

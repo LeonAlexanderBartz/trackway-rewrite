@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
@@ -54,22 +55,22 @@ class User
     protected ?string $password;
 
     /**
-     * @ORM\Column(name="lastLogin", type="datetime", nullable=true)
+     * @ORM\Column(name="last_login", type="datetime", nullable=true)
      */
     protected ?DateTime $lastLogin;
 
     /**
-     * @ORM\Column(name="confirmationToken", type="string", length=255, nullable=true)
+     * @ORM\Column(name="confirmation_token", type="string", length=255, nullable=true)
      */
     protected ?string $confirmationToken;
 
     /**
-     * @ORM\Column(name="registrationRequestedAt", type="datetime", nullable=true)
+     * @ORM\Column(name="registration_requested_at", type="datetime", nullable=true)
      */
     protected ?DateTime $registrationRequestedAt;
 
     /**
-     * @ORM\Column(name="passwordRequestedAt", type="datetime", nullable=true)
+     * @ORM\Column(name="password_requested_at", type="datetime", nullable=true)
      */
     protected ?DateTime $passwordRequestedAt;
 

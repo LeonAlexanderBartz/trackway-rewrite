@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class GeneralControllerTest extends WebTestCase

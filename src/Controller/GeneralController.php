@@ -13,7 +13,10 @@ class GeneralController
      */
     public function index() {
         return new JsonResponse([
-            "online" => true
+            "success" => true,
+            "data" => [
+                "online" => true
+            ]
         ]);
     }
 }

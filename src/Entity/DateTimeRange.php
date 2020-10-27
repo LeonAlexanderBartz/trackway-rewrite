@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Embeddable
@@ -20,12 +21,12 @@ class DateTimeRange
     protected DateTime $date;
 
     /**
-     * @ORM\Column(name="endsAt", type="time")
+     * @ORM\Column(name="ends_at", type="time")
      */
     protected DateTime $endsAt;
 
     /**
-     * @ORM\Column(name="startsAt", type="time")
+     * @ORM\Column(name="starts_at", type="time")
      */
     protected DateTime $startsAt;
 

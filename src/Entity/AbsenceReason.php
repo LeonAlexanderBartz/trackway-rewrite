@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * AbsenceReason
  *
  * @ORM\Entity(repositoryClass="App\Repository\AbsenceReasonRepository")
- * @ORM\Table(name="absenceReasons")
+ * @ORM\Table(name="absence_reasons")
  */
 class AbsenceReason
 {
