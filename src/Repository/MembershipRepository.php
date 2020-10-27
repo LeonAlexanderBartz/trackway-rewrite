@@ -2,49 +2,44 @@
 
 namespace App\Repository;
 
-use App\Entity\Membership;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Team;
+use App\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * @method Membership|null find($id, $lockMode = null, $lockVersion = null)
- * @method Membership|null findOneBy(array $criteria, array $orderBy = null)
- * @method Membership[]    findAll()
- * @method Membership[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class MembershipRepository
+ *
+ * @package AppBundle\Entity\Repository
  */
-class MembershipRepository extends ServiceEntityRepository
+class MembershipRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param Team $team
+     *
+     * @return array
+     */
+    public function findByTeam(Team $team)
     {
-        parent::__construct($registry, Membership::class);
+        return $this->findByTeamQuery($team)->getResult();
     }
 
-    // /**
-    //  * @return Membership[] Returns an array of Membership objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Team $team
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    public function findByTeamQuery(Team $team)
     {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->createQueryBuilder('m')->where('m.team = :team')->setParameter('team', $team->getId())->getQuery();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Membership
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
+    public function findByUser(User $user)
     {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->findBy(['user' => $user->getId()]);
     }
-    */
 }

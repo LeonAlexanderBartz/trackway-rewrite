@@ -2,82 +2,140 @@
 
 namespace App\Entity;
 
-use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TeamRepository::class)
+ * Team
+ *
+ * @ORM\Table(name="teams")
+ * @ORM\Entity(repositoryClass="App\Repository\TeamRepository")
  */
 class Team
 {
     /**
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
+     * @Assert\Length(min = 1, max = 255)
      */
-    private $name;
+    private string $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="activeTeam")
+     * @ORM\OneToMany(targetEntity="Membership", mappedBy="team", cascade={"remove"})
      */
-    private $users;
+    private ArrayCollection $memberships;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Invitation", mappedBy="team", cascade={"remove"})
+     */
+    protected ArrayCollection $invitations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Project", mappedBy="team", cascade={"remove"})
+     */
+    private ArrayCollection $projects;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->memberships = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
+        $this->projects = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    /**
+     * @return integer
+     */
+    public function getId()
     {
-        $this->name = $name;
-
-        return $this;
+        return $this->id;
     }
 
     /**
-     * @return Collection|User[]
+     * @param integer $id
      */
-    public function getUsers(): Collection
+    public function setId(int $id)
     {
-        return $this->users;
+        $this->id = $id;
     }
 
-    public function addUser(User $user): self
+    /**
+     * @return string
+     */
+    public function getName()
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setActiveTeam($this);
-        }
-
-        return $this;
+        return $this->name;
     }
 
-    public function removeUser(User $user): self
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getActiveTeam() === $this) {
-                $user->setActiveTeam(null);
-            }
-        }
+        $this->name = $name;
+    }
 
-        return $this;
+    /**
+     * @return ArrayCollection
+     */
+    public function getMemberships()
+    {
+        return $this->memberships;
+    }
+
+    /**
+     * @param ArrayCollection $memberships
+     */
+    public function setMemberships(ArrayCollection $memberships)
+    {
+        $this->memberships = $memberships;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getInvitations()
+    {
+        return $this->invitations;
+    }
+
+    /**
+     * @param ArrayCollection $invitations
+     */
+    public function setInvitations(ArrayCollection $invitations)
+    {
+        $this->invitations = $invitations;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * @param ArrayCollection $projects
+     */
+    public function setProjects(ArrayCollection $projects)
+    {
+        $this->projects = $projects;
     }
 }

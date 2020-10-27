@@ -2,44 +2,55 @@
 
 namespace App\Entity;
 
-use App\Repository\InvitationRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=InvitationRepository::class)
+ * Invitation
+ *
+ * @ORM\Table(name="invitations")
+ * @ORM\Entity(repositoryClass="App\Repository\InvitationRepository")
  */
 class Invitation
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Team::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="Team", inversedBy="invitations")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
-    private $team;
+    protected ?Team $team;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="email", type="string")
+     *
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
+     * @Assert\Email()
+     * @Assert\Length(max = 255)
      */
-    private $email;
-
-    //TODO: User
-    private $user;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $confirmationToken;
+    protected string $email;
 
     /**
-     * @ORM\ManyToOne(targetEntity=InvitationStatus::class)
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="invitations")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $status;
+    protected ?User $user;
+
+    /**
+     * @ORM\Column(name="confirmation_token", type="string", length=255, nullable=true)
+     */
+    protected string $confirmationToken;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="InvitationStatus")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
+     */
+    protected ?InvitationStatus $status;
 
     public function getId(): ?int
     {
@@ -70,7 +81,7 @@ class Invitation
         return $this;
     }
 
-    public function getUser(): ?AbsenceReason
+    public function getUser(): User
     {
         return $this->user;
     }

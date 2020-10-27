@@ -2,29 +2,40 @@
 
 namespace App\Entity;
 
-use App\Repository\AbsenceReasonRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AbsenceReasonRepository::class)
+ * AbsenceReason
+ *
+ * @ORM\Entity(repositoryClass="App\Repository\AbsenceReasonRepository")
+ * @ORM\Table(name="absenceReasons")
  */
 class AbsenceReason
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
+     * @Assert\Length(min = 1, max = 255)
      */
-    private $name;
+    private string $name;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 
     public function getName(): ?string
@@ -32,10 +43,8 @@ class AbsenceReason
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 }

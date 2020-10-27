@@ -3,48 +3,89 @@
 namespace App\Repository;
 
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
+use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class UserRepository
+ *
+ * @package AppBundle\Entity\Repository
  */
-class UserRepository extends ServiceEntityRepository
+class UserRepository extends EntityRepository implements UserProviderInterface, UserLoaderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param string $token
+     *
+     * @return User
+     */
+    public function findOneByConfirmationToken($token)
     {
-        parent::__construct($registry, User::class);
+        return $this->findOneBy(['confirmationToken' => $token]);
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $email
+     *
+     * @return User
+     */
+    public function findOneByEmail($email)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findOneBy(['email' => $email]);
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?User
+    /**
+     * @param string $username
+     *
+     * @return User
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function loadUserByUsername($username)
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $q =
+            $this->createQueryBuilder('u')
+                ->where('u.username = :username OR u.email = :email')
+                ->setParameter('username', $username)
+                ->setParameter('email', $username)
+                ->getQuery();
+
+        try {
+            $user = $q->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new UsernameNotFoundException(sprintf('Unable to find an active admin AcmeUserBundle:User object identified by "%s".', $username), 0, $e);
+        }
+
+        return $user;
     }
-    */
+
+    /**
+     * @param UserInterface $user
+     *
+     * @return User
+     */
+    public function refreshUser(UserInterface $user)
+    {
+        $class = get_class($user);
+
+        if (!$this->supportsClass($class)) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $class));
+        }
+
+        /** @var User $user */
+        return $this->find($user->getId());
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return bool
+     */
+    public function supportsClass($class)
+    {
+        return $this->getEntityName() === $class || is_subclass_of($class, $this->getEntityName());
+    }
 }

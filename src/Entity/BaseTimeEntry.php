@@ -2,39 +2,55 @@
 
 namespace App\Entity;
 
-use App\Repository\BaseTimeEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=BaseTimeEntryRepository::class)
+ * BaseTimeEntry
+ *
+ * @ORM\MappedSuperclass
  */
 class BaseTimeEntry
 {
     /**
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Team::class)
+     * @ORM\ManyToOne(targetEntity="Team")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
      */
-    private $team;
+    protected ?Team $team;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $note;
+    protected User $user;
 
     /**
-     * @ORM\OneToOne(targetEntity=DateTimeRange::class, cascade={"persist", "remove"})
+     * @ORM\Column(name="note", type="string", length=255)
+     *
+     * @Assert\NotNull()
+     * @Assert\Length(max = 255)
      */
-    private $dateTimeRange;
+    protected string $note;
+
+    /**
+     * @ORM\Embedded(class = "DateTimeRange", columnPrefix=false)
+     */
+    private ?DateTimeRange $dateTimeRange;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 
     public function getNote(): ?string
@@ -57,6 +73,19 @@ class BaseTimeEntry
     public function setTeam(?Team $team): self
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

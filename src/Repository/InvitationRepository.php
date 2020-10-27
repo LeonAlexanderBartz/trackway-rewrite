@@ -2,49 +2,34 @@
 
 namespace App\Repository;
 
-use App\Entity\Invitation;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Team;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 /**
- * @method Invitation|null find($id, $lockMode = null, $lockVersion = null)
- * @method Invitation|null findOneBy(array $criteria, array $orderBy = null)
- * @method Invitation[]    findAll()
- * @method Invitation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class InvitationRepository
+ *
+ * @package AppBundle\Entity\Repository
  */
-class InvitationRepository extends ServiceEntityRepository
+class InvitationRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param Team $team
+     *
+     * @return array
+     */
+    public function findByTeam(Team $team)
     {
-        parent::__construct($registry, Invitation::class);
+        return $this->findByTeamQuery($team)->getResult();
     }
 
-    // /**
-    //  * @return Invitation[] Returns an array of Invitation objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Team $team
+     *
+     * @return Query
+     */
+    public function findByTeamQuery(Team $team)
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->createQueryBuilder('i')->where('i.team = :team')->setParameter('team', $team->getId())->getQuery();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Invitation
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -2,31 +2,25 @@
 
 namespace App\Entity;
 
-use App\Repository\AbsenceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AbsenceRepository::class)
+ * Absence
+ *
+ * @ORM\Table(name="absences")
+ * @ORM\Entity(repositoryClass="App\Repository\AbsenceRepository")
  */
 class Absence extends BaseTimeEntry
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=AbsenceReason::class, inversedBy="absences")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="AbsenceReason")
+     * @ORM\JoinColumn(name="reason_id", referencedColumnName="id")
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="App\Entity\AbsenceReason")
      */
-    private $reason;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    protected ?AbsenceReason $reason;
 
     public function getReason(): ?AbsenceReason
     {

@@ -2,49 +2,126 @@
 
 namespace App\Repository;
 
-use App\Entity\Absence;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Team;
+use App\Entity\User;
+use DateTime;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 /**
- * @method Absence|null find($id, $lockMode = null, $lockVersion = null)
- * @method Absence|null findOneBy(array $criteria, array $orderBy = null)
- * @method Absence[]    findAll()
- * @method Absence[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class AbsenceRepository
+ *
+ * @package AppBundle\Entity\Repository
  */
-class AbsenceRepository extends ServiceEntityRepository
+class AbsenceRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param Team $team
+     *
+     * @return mixed
+     */
+    public function removeByTeam(Team $team)
     {
-        parent::__construct($registry, Absence::class);
+        return $this
+            ->createQueryBuilder('a')
+            ->delete()
+            ->where('a.team = :team')
+            ->setParameter('team', $team->getId())
+            ->getQuery()
+            ->execute();
     }
 
-    // /**
-    //  * @return Absence[] Returns an array of Absence objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Team $team
+     * @param DateTime|null $startDate
+     * @param DateTime|null $endDate
+     *
+     * @return array
+     */
+    public function findByTeam(Team $team, DateTime $startDate = null, DateTime $endDate = null)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findByTeamQuery($team, $startDate, $endDate)->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Absence
+    /**
+     * Used for KnpPaginator.
+     *
+     * @param Team $team
+     * @param DateTime|null $startDate
+     * @param DateTime|null $endDate
+     *
+     * @return Query
+     */
+    public function findByTeamQuery(Team $team, DateTime $startDate = null, DateTime $endDate = null)
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $queryBuilder =  $this
+            ->createQueryBuilder('a')
+            ->orderBy('a.dateTimeRange.date')
+            ->orderBy('a.dateTimeRange.startsAt')
+            ->where('a.team = :team')
+            ->setParameter('team', $team->getId());
+
+        if ($startDate) {
+            $queryBuilder
+                ->andWhere('a.dateTimeRange.date >= :startDate')
+                ->setParameter('startDate', $startDate);
+        }
+
+        if ($endDate) {
+            $queryBuilder
+                ->andWhere('a.dateTimeRange.date <= :endDate')
+                ->setParameter('endDate', $endDate);
+        }
+
+        return $queryBuilder->getQuery();
     }
-    */
+
+    /**
+     * @param Team $team
+     * @param User $user
+     * @param DateTime|null $startDate
+     * @param DateTime|null $endDate
+     *
+     * @return array
+     */
+    public function findByTeamAndUser(Team $team, User $user, DateTime $startDate = null, DateTime $endDate = null)
+    {
+        return $this->findByTeamAndUserQuery($team, $user, $startDate, $endDate)->getResult();
+    }
+
+    /**
+     * Used for KnpPaginator.
+     *
+     * @param Team $team
+     * @param User $user
+     * @param DateTime|null $startDate
+     * @param DateTime|null $endDate
+     *
+     * @return Query
+     */
+    public function findByTeamAndUserQuery(Team $team, User $user, DateTime $startDate = null, DateTime $endDate = null)
+    {
+        $queryBuilder =  $this
+            ->createQueryBuilder('a')
+            ->orderBy('a.dateTimeRange.date')
+            ->orderBy('a.dateTimeRange.startsAt')
+            ->where('a.team = :team')
+            ->andWhere('a.user = :user')
+            ->setParameter('team', $team->getId())
+            ->setParameter('user', $user->getId());
+
+        if ($startDate) {
+            $queryBuilder
+                ->andWhere('a.dateTimeRange.date >= :startDate')
+                ->setParameter('startDate', $startDate);
+        }
+
+        if ($endDate) {
+            $queryBuilder
+                ->andWhere('a.dateTimeRange.date <= :endDate')
+                ->setParameter('endDate', $endDate);
+        }
+
+        return $queryBuilder->getQuery();
+    }
 }

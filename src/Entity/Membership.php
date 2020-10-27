@@ -12,25 +12,37 @@ class Membership
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Team::class)
+     * @ORM\ManyToOne(targetEntity="Team", inversedBy="memberships")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id")
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="App\Entity\Team")
      */
-    private $team;
-
-
-    //TODO
-    private $user;
+    protected ?Team $team;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="memberships")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="memberships")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="App\Entity\User")
      */
-    private $newUser;
+    protected ?User $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Group")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="App\Entity\Group")
+     */
+    protected Group $group;
 
     public function getId(): ?int
     {
@@ -49,7 +61,7 @@ class Membership
         return $this;
     }
 
-    public function getUser(): ?Team
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -61,14 +73,14 @@ class Membership
         return $this;
     }
 
-    public function getNewUser(): ?User
+    public function getGroup(): Group
     {
-        return $this->newUser;
+        return $this->group;
     }
 
-    public function setNewUser(?User $newUser): self
+    public function setGroup(Group $group): self
     {
-        $this->newUser = $newUser;
+        $this->group = $group;
 
         return $this;
     }

@@ -3,48 +3,43 @@
 namespace App\Repository;
 
 use App\Entity\Project;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Team;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * @method Project|null find($id, $lockMode = null, $lockVersion = null)
- * @method Project|null findOneBy(array $criteria, array $orderBy = null)
- * @method Project[]    findAll()
- * @method Project[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Class ProjectRepository
+ *
+ * @package AppBundle\Entity\Repository
  */
-class ProjectRepository extends ServiceEntityRepository
+class ProjectRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param Team $team
+     *
+     * @return array
+     */
+    public function findByTeam(Team $team)
     {
-        parent::__construct($registry, Project::class);
+        return $this->findByTeamQuery($team)->getResult();
     }
 
-    // /**
-    //  * @return Project[] Returns an array of Project objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Team $team
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    public function findByTeamQuery(Team $team)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->createQueryBuilder('p')->where('p.team = :team')->setParameter('team', $team->getId())->getQuery();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Project
+    /**
+     * @param $name
+     *
+     * @return null|Project
+     */
+    public function findOneByName($name)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->findOneBy(['name' => $name]);
     }
-    */
 }

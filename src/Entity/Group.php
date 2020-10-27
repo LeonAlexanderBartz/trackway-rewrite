@@ -2,35 +2,47 @@
 
 namespace App\Entity;
 
-use App\Repository\GroupRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=GroupRepository::class)
- * @ORM\Table(name="`group`")
+ * Group
+ *
+ * @ORM\Entity(repositoryClass="App\Repository\GroupRepository")
+ * @ORM\Table(name="groups")
  */
 class Group
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
+     * @Assert\Length(min = 1, max = 255)
      */
-    private $name;
+    protected string $name;
 
     /**
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(name="roles", type="array")
      */
-    private $roles = [];
+    protected ?array $roles;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId($id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string

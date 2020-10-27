@@ -3,48 +3,58 @@
 namespace App\Repository;
 
 use App\Entity\Team;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\User;
+use Doctrine\ORM\EntityRepository;
 
 /**
- * @method Team|null find($id, $lockMode = null, $lockVersion = null)
- * @method Team|null findOneBy(array $criteria, array $orderBy = null)
- * @method Team[]    findAll()
- * @method Team[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * TeamRepository
  */
-class TeamRepository extends ServiceEntityRepository
+class TeamRepository extends EntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @param User $user
+     *
+     * @return Team[]
+     */
+    public function findByUser(User $user)
     {
-        parent::__construct($registry, Team::class);
+        return $this->findByUserQuery($user)->getResult();
     }
 
-    // /**
-    //  * @return Team[] Returns an array of Team objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Used for KnpPaginator.
+     *
+     * @param User $user
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    public function findByUserQuery(User $user)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this
+            ->createQueryBuilder('t')
+            ->join('t.memberships', 'm')
+            ->where('m.user = :user')
+            ->setParameter('user', $user->getId())
+            ->getQuery();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Team
+    /**
+     * @param $name
+     *
+     * @return null|Team
+     */
+    public function findOneByName($name)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->findOneBy(['name' => $name]);
     }
-    */
+
+    /**
+     * @param Team $team
+     */
+    public function remove(Team $team)
+    {
+        $this->getEntityManager()->getRepository('AppBundle:TimeEntry')->removeByTeam($team);
+        $this->getEntityManager()->remove($team);
+        $this->getEntityManager()->flush();
+    }
 }

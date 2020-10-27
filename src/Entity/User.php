@@ -2,289 +2,294 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
+ * User
+ *
+ * @ORM\Table(name="users")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *
+ * @UniqueEntity(fields={"email"}, groups={"profile", "registration"})
+ * @UniqueEntity(fields={"username"}, groups={"profile", "registration"})
  */
 class User
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected ?int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="username", type="string", length=255, unique=true)
+     *
+     * @Assert\NotBlank(groups={"profile", "registration"})
+     * @Assert\Length(min=3, groups={"profile", "registration"})
      */
-    private $username;
+    protected string $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=255, unique=true)
+     *
+     * @Assert\Email(groups={"profile", "registration", "resetting"})
      */
-    private $email;
+    protected ?string $email;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(name="enabled ", type="boolean")
      */
-    private $enabled;
+    protected ?bool $enabled;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="password", type="string", length=255)
+     *
+     * @Assert\NotBlank(groups={"change_password", "registration"})
+     * @Assert\Length(min=3, groups={"change_password", "registration"})
      */
-    private $password;
+    protected ?string $password;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="lastLogin", type="datetime", nullable=true)
      */
-    private $lastLogin;
+    protected ?DateTime $lastLogin;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="confirmationToken", type="string", length=255, nullable=true)
      */
-    private $confirmationToken;
+    protected ?string $confirmationToken;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="registrationRequestedAt", type="datetime", nullable=true)
      */
-    private $registrationRequestedAt;
+    protected ?DateTime $registrationRequestedAt;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(name="passwordRequestedAt", type="datetime", nullable=true)
      */
-    private $passwordRequestedAt;
+    protected ?DateTime $passwordRequestedAt;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(name="roles", type="array")
      */
-    private $roles = [];
+    protected ?array $roles;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Locale::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="Locale")
+     * @ORM\JoinColumn(name="locale_id", referencedColumnName="id")
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="App\Entity\Locale")
      */
-    private $locale;
+    protected Locale $locale;
 
     /**
-     * @ORM\OneToMany(targetEntity=Membership::class, mappedBy="newUser")
+     * @ORM\OneToMany(targetEntity="Membership", mappedBy="user")
      */
-    private $memberships;
+    protected ArrayCollection $memberships;
 
     /**
-     * @ORM\OneToMany(targetEntity=InvitationStatus::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Invitation", mappedBy="user")
      */
-    private $invitations;
+    protected ArrayCollection $invitations;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity="Team")
+     * @ORM\JoinColumn(name="activeTeam_id", referencedColumnName="id")
      */
-    private $activeTeam;
+    protected ?Team $activeTeam;
 
     public function __construct()
     {
+        $this->roles = [];
         $this->memberships = new ArrayCollection();
         $this->invitations = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getUsername(): ?string
+    /**
+     * @return string
+     */
+    public function __toString()
     {
         return $this->username;
     }
 
-    public function setUsername(string $username): self
+    public function eraseCredentials()
     {
-        $this->username = $username;
-
-        return $this;
     }
 
-    public function getEmail(): ?string
+    public function isAccountNonExpired()
     {
-        return $this->email;
+        return true;
     }
 
-    public function setEmail(string $email): self
+    public function isAccountNonLocked()
     {
-        $this->email = $email;
-
-        return $this;
+        return true;
     }
 
-    public function getEnabled(): ?bool
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    public function isEnabled()
     {
         return $this->enabled;
     }
 
-    public function setEnabled(bool $enabled): self
+    public function serialize(): string
     {
-        $this->enabled = $enabled;
-
-        return $this;
+        return serialize([$this->id, $this->username, $this->password, $this->locale]);
     }
 
-    public function getPassword(): ?string
+    public function unserialize(string $serialized): void
+    {
+        list ($this->id, $this->username, $this->password, $this->locale) = unserialize($serialized);
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
+    }
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): void
     {
         $this->password = $password;
-
-        return $this;
     }
 
-    public function getLastLogin(): ?\DateTimeInterface
+    public function getLastLogin(): DateTime
     {
         return $this->lastLogin;
     }
 
-    public function setLastLogin(?\DateTimeInterface $lastLogin): self
+    public function setLastLogin(DateTime $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
-
-        return $this;
     }
 
-    public function getConfirmationToken(): ?string
+    public function getConfirmationToken(): string
     {
         return $this->confirmationToken;
     }
 
-    public function setConfirmationToken(string $confirmationToken): self
+    public function setConfirmationToken(string$confirmationToken): void
     {
         $this->confirmationToken = $confirmationToken;
-
-        return $this;
     }
 
-    public function getRegistrationRequestedAt(): ?\DateTimeInterface
+    public function getRegistrationRequestedAt(): DateTime
     {
         return $this->registrationRequestedAt;
     }
 
-    public function setRegistrationRequestedAt(\DateTimeInterface $registrationRequestedAt): self
+    public function setRegistrationRequestedAt(DateTime $registrationRequestedAt): void
     {
         $this->registrationRequestedAt = $registrationRequestedAt;
-
-        return $this;
     }
 
-    public function getPasswordRequestedAt(): ?\DateTimeInterface
+    public function getPasswordRequestedAt(): DateTime
     {
         return $this->passwordRequestedAt;
     }
 
-    public function setPasswordRequestedAt(?\DateTimeInterface $passwordRequestedAt): self
+    public function setPasswordRequestedAt(DateTime $passwordRequestedAt)
     {
         $this->passwordRequestedAt = $passwordRequestedAt;
-
-        return $this;
     }
 
-    public function getRoles(): ?array
+    public function getRoles(): array
     {
         return $this->roles;
     }
 
-    public function setRoles(array $roles): self
+    public function setRoles(array $roles): void
     {
         $this->roles = $roles;
-
-        return $this;
     }
 
-    public function getLocale(): ?Locale
+
+    public function getLocale(): Locale
     {
         return $this->locale;
     }
 
-    public function setLocale(?Locale $locale): self
+    public function setLocale(Locale $locale): void
     {
         $this->locale = $locale;
-
-        return $this;
     }
 
-    /**
-     * @return Collection|Membership[]
-     */
-    public function getMemberships(): Collection
+    public function getMemberships(): ArrayCollection
     {
         return $this->memberships;
     }
 
-    public function addMembership(Membership $membership): self
+    public function setMemberships(ArrayCollection$memberships): void
     {
-        if (!$this->memberships->contains($membership)) {
-            $this->memberships[] = $membership;
-            $membership->setNewUser($this);
-        }
-
-        return $this;
+        $this->memberships = $memberships;
     }
 
-    public function removeMembership(Membership $membership): self
-    {
-        if ($this->memberships->removeElement($membership)) {
-            // set the owning side to null (unless already changed)
-            if ($membership->getNewUser() === $this) {
-                $membership->setNewUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|InvitationStatus[]
-     */
-    public function getInvitations(): Collection
+    public function getInvitations(): ArrayCollection
     {
         return $this->invitations;
     }
 
-    public function addInvitation(InvitationStatus $invitation): self
+    public function setInvitations(ArrayCollection$invitations): void
     {
-        if (!$this->invitations->contains($invitation)) {
-            $this->invitations[] = $invitation;
-            $invitation->setUser($this);
-        }
-
-        return $this;
+        $this->invitations = $invitations;
     }
 
-    public function removeInvitation(InvitationStatus $invitation): self
-    {
-        if ($this->invitations->removeElement($invitation)) {
-            // set the owning side to null (unless already changed)
-            if ($invitation->getUser() === $this) {
-                $invitation->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getActiveTeam(): ?Team
+    public function getActiveTeam(): Team
     {
         return $this->activeTeam;
     }
 
-    public function setActiveTeam(?Team $activeTeam): self
+    public function setActiveTeam(Team $activeTeam): void
     {
         $this->activeTeam = $activeTeam;
-
-        return $this;
     }
 }

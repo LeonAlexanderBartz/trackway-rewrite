@@ -2,26 +2,21 @@
 
 namespace App\Entity;
 
-use App\Repository\TimeEntryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TimeEntryRepository::class)
+ * TimeEntry
+ *
+ * @ORM\Table(name="timeEntries")
+ * @ORM\Entity(repositoryClass="App\Repository\TimeEntryRepository")
  */
 class TimeEntry extends BaseTimeEntry
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Project")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
-    private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Project::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $project;
+    protected ?Project $project;
 
     public function getId(): ?int
     {

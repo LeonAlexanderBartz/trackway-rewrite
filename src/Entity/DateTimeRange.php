@@ -2,74 +2,114 @@
 
 namespace App\Entity;
 
-use App\Repository\DateTimeRangeRepository;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=DateTimeRangeRepository::class)
+ * @ORM\Embeddable
  */
 class DateTimeRange
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="date", type="date")
+     *
+     * @Assert\NotNull()
+     * @Assert\Type(type="\DateTime")
      */
-    private $id;
+    protected DateTime $date;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(name="endsAt", type="time")
      */
-    private $date;
+    protected DateTime $endsAt;
 
     /**
-     * @ORM\Column(type="time", nullable=true)
+     * @ORM\Column(name="startsAt", type="time")
      */
-    private $endsAt;
+    protected DateTime $startsAt;
 
     /**
-     * @ORM\Column(type="time", nullable=true)
+     * @return DateTime
      */
-    private $startsAt;
-
-    public function getId(): ?int
+    public function getStartDateTime(): DateTime
     {
-        return $this->id;
+        $return = clone $this->getDate();
+        $return->setTime($this->getStartsAt()->format('H'), $this->getStartsAt()->format('i'), $this->getStartsAt()->format('s'));
+        return $return;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    /**
+     * @return DateTime
+     */
+    public function getEndDateTime(): DateTime
+    {
+        $return = clone $this->getDate();
+        $return->setTime($this->getEndsAt()->format('H'), $this->getEndsAt()->format('i'), $this->getEndsAt()->format('s'));
+        return $return;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate(): DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    /**
+     * @param DateTime $date
+     */
+    public function setDate(DateTime $date): void
     {
         $this->date = $date;
-
-        return $this;
     }
 
-    public function getEndsAt(): ?\DateTimeInterface
+    /**
+     * @return DateTime
+     */
+    public function getEndsAt(): DateTime
     {
         return $this->endsAt;
     }
 
-    public function setEndsAt(?\DateTimeInterface $endsAt): self
+    /**
+     * @param DateTime $endsAt
+     */
+    public function setEndsAt(DateTime $endsAt): void
     {
         $this->endsAt = $endsAt;
-
-        return $this;
     }
 
-    public function getStartsAt(): ?\DateTimeInterface
+    /**
+     * @return DateTime
+     */
+    public function getStartsAt(): DateTime
     {
         return $this->startsAt;
     }
 
-    public function setStartsAt(?\DateTimeInterface $startsAt): self
+    /**
+     * @param DateTime $startsAt
+     */
+    public function setStartsAt(DateTime $startsAt): void
     {
         $this->startsAt = $startsAt;
+    }
 
-        return $this;
+    /**
+     * @return bool|DateInterval
+     */
+    public function getInterval()
+    {
+        return date_diff($this->getEndDateTime(), $this->getStartDateTime());
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntervalInSeconds()
+    {
+        return abs((new DateTime('@0'))->add($this->getInterval())->getTimestamp());
     }
 }

@@ -12,20 +12,24 @@ class InvitationStatus
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string")
+     * @Assert\Length(min = 1, max = 255)
      */
-    private $name;
+    protected string $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="invitations")
      */
-    private $user;
+    private ?User $user;
 
     public function getId(): ?int
     {
