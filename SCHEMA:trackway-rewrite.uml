@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>cf71acb2-42fe-4869-89d2-a341bbaa88bb.SCHEMA:trackway-rewrite</OriginalElement>
+  <nodes>
+    <node x="43.0" y="225.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.projects</node>
+    <node x="454.54509803921576" y="753.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitations</node>
+    <node x="263.0" y="236.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.groups</node>
+    <node x="772.2784313725491" y="247.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.absence_reasons</node>
+    <node x="704.75" y="494.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.absences</node>
+    <node x="165.28431372549016" y="494.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.time_entries</node>
+    <node x="517.0" y="549.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitation_status</node>
+    <node x="280.78431372549016" y="0.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams</node>
+    <node x="358.03431372549016" y="538.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.membership</node>
+    <node x="0.0" y="963.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.doctrine_migration_versions</node>
+    <node x="467.7784313725491" y="137.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users</node>
+    <node x="600.4509803921569" y="0.0">cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.locale</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.time_entries" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.projects">
+      <point x="-50.0" y="-104.5" />
+      <point x="190.28431372549016" y="474.0" />
+      <point x="142.5" y="474.0" />
+      <point x="0.0" y="60.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.time_entries" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams">
+      <point x="0.0" y="-104.5" />
+      <point x="240.28431372549016" y="474.0" />
+      <point x="252.50000000000003" y="474.0" />
+      <point x="252.50000000000003" y="117.0" />
+      <point x="345.78431372549016" y="117.0" />
+      <point x="-13.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitations" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users">
+      <point x="83.33333333333337" y="-82.5" />
+      <point x="662.8784313725491" y="728.0" />
+      <point x="694.25" y="728.0" />
+      <point x="694.25" y="474.0" />
+      <point x="653.9784313725492" y="474.0" />
+      <point x="53.200000000000045" y="148.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitations" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitation_status">
+      <point x="0.0" y="-82.5" />
+      <point x="579.5450980392158" y="728.0" />
+      <point x="599.5" y="728.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitations" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams">
+      <point x="-83.33333333333331" y="-82.5" />
+      <point x="496.21176470588244" y="728.0" />
+      <point x="32.5" y="728.0" />
+      <point x="32.5" y="97.0" />
+      <point x="293.78431372549016" y="97.0" />
+      <point x="-65.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.membership" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users">
+      <point x="45.0" y="-60.5" />
+      <point x="470.53431372549016" y="474.0" />
+      <point x="547.5784313725491" y="474.0" />
+      <point x="-53.200000000000045" y="148.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.time_entries" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users">
+      <point x="50.0" y="-104.5" />
+      <point x="290.28431372549016" y="464.0" />
+      <point x="494.37843137254913" y="464.0" />
+      <point x="-106.39999999999998" y="148.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.membership" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.groups">
+      <point x="-45.0" y="-60.5" />
+      <point x="380.53431372549016" y="454.0" />
+      <point x="341.0" y="454.0" />
+      <point x="0.0" y="49.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.absences" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.absence_reasons">
+      <point x="50.0" y="-104.5" />
+      <point x="829.75" y="474.0" />
+      <point x="850.2784313725491" y="474.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.absences" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users">
+      <point x="-50.0" y="-104.5" />
+      <point x="729.75" y="474.0" />
+      <point x="707.1784313725491" y="474.0" />
+      <point x="106.39999999999998" y="148.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.membership" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams">
+      <point x="0.0" y="-60.5" />
+      <point x="425.53431372549016" y="454.0" />
+      <point x="429.5" y="454.0" />
+      <point x="429.5" y="117.0" />
+      <point x="371.78431372549016" y="117.0" />
+      <point x="13.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.locale">
+      <point x="66.5" y="-148.5" />
+      <point x="667.2784313725491" y="117.0" />
+      <point x="678.4509803921569" y="117.0" />
+      <point x="0.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.absences" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams">
+      <point x="0.0" y="-104.5" />
+      <point x="779.75" y="474.0" />
+      <point x="761.7784313725491" y="474.0" />
+      <point x="761.7784313725491" y="97.0" />
+      <point x="423.78431372549016" y="97.0" />
+      <point x="65.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams">
+      <point x="-66.5" y="-148.5" />
+      <point x="534.2784313725491" y="107.0" />
+      <point x="397.78431372549016" y="107.0" />
+      <point x="39.0" y="38.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.invitation_status" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.users">
+      <point x="0.0" y="-49.5" />
+      <point x="599.5" y="474.0" />
+      <point x="600.7784313725491" y="474.0" />
+      <point x="0.0" y="148.5" />
+    </edge>
+    <edge source="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.projects" target="cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.teams">
+      <point x="0.0" y="-60.5" />
+      <point x="142.5" y="107.0" />
+      <point x="319.78431372549016" y="107.0" />
+      <point x="-39.0" y="38.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6118299445471349" x="464.5" y="531.0" />
+  <SelectedNodes>
+    <node>cf71acb2-42fe-4869-89d2-a341bbaa88bb.TABLE:trackway-rewrite.projects</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+    <Category>Virtual foreign keys</Category>
+  </Categories>
+</Diagram>
+
