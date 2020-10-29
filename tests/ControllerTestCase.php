@@ -21,11 +21,20 @@ class ControllerTestCase extends WebTestCase
             ->getManager();
     }
 
-    public function assertOK()
+    public function assertOK($status = 200)
     {
         $statusCode = $this->client->getResponse()->getStatusCode();
         $this->assertEquals(
-            200,
+            $status,
+            $statusCode
+        );
+    }
+
+    public function assertError($status = 500)
+    {
+        $statusCode = $this->client->getResponse()->getStatusCode();
+        $this->assertEquals(
+            $status,
             $statusCode
         );
     }

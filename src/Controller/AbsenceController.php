@@ -33,7 +33,7 @@ class AbsenceController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/new", methods={"POST"}, format="json")
+     * @Route("", methods={"POST"}, format="json")
      */
     public function postAbsenceAction(Request $request)
     {

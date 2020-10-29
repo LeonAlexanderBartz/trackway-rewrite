@@ -100,7 +100,7 @@ class User
 
     /**
      * @ORM\ManyToOne(targetEntity="Team")
-     * @ORM\JoinColumn(name="activeTeam_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="active_team_id", referencedColumnName="id")
      */
     protected ?Team $activeTeam;
 
