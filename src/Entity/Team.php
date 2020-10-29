@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,17 +34,17 @@ class Team
     /**
      * @ORM\OneToMany(targetEntity="Membership", mappedBy="team", cascade={"remove"})
      */
-    private ArrayCollection $memberships;
+    private Collection $memberships;
 
     /**
      * @ORM\OneToMany(targetEntity="Invitation", mappedBy="team", cascade={"remove"})
      */
-    protected ArrayCollection $invitations;
+    protected Collection $invitations;
 
     /**
      * @ORM\OneToMany(targetEntity="Project", mappedBy="team", cascade={"remove"})
      */
-    private ArrayCollection $projects;
+    private Collection $projects;
 
     public function __construct()
     {

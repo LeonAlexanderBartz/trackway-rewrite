@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,7 +24,7 @@ class User
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected ?int $id;
+    protected int $id;
 
     /**
      * @ORM\Column(name="username", type="string", length=255, unique=true)
@@ -39,7 +39,7 @@ class User
      *
      * @Assert\Email(groups={"profile", "registration", "resetting"})
      */
-    protected ?string $email;
+    protected string $email;
 
     /**
      * @ORM\Column(name="enabled ", type="boolean")
@@ -52,7 +52,7 @@ class User
      * @Assert\NotBlank(groups={"change_password", "registration"})
      * @Assert\Length(min=3, groups={"change_password", "registration"})
      */
-    protected ?string $password;
+    protected string $password;
 
     /**
      * @ORM\Column(name="last_login", type="datetime", nullable=true)
@@ -75,7 +75,7 @@ class User
     protected ?DateTime $passwordRequestedAt;
 
     /**
-     * @ORM\Column(name="roles", type="array")
+     * @ORM\Column(name="roles", type="json")
      */
     protected ?array $roles;
 
@@ -91,12 +91,12 @@ class User
     /**
      * @ORM\OneToMany(targetEntity="Membership", mappedBy="user")
      */
-    protected ArrayCollection $memberships;
+    protected Collection $memberships;
 
     /**
      * @ORM\OneToMany(targetEntity="Invitation", mappedBy="user")
      */
-    protected ArrayCollection $invitations;
+    protected Collection $invitations;
 
     /**
      * @ORM\ManyToOne(targetEntity="Team")
@@ -107,8 +107,6 @@ class User
     public function __construct()
     {
         $this->roles = [];
-        $this->memberships = new ArrayCollection();
-        $this->invitations = new ArrayCollection();
     }
 
     /**
@@ -264,22 +262,22 @@ class User
         $this->locale = $locale;
     }
 
-    public function getMemberships(): ArrayCollection
+    public function getMemberships(): Collection
     {
         return $this->memberships;
     }
 
-    public function setMemberships(ArrayCollection$memberships): void
+    public function setMemberships(Collection$memberships): void
     {
         $this->memberships = $memberships;
     }
 
-    public function getInvitations(): ArrayCollection
+    public function getInvitations(): Collection
     {
         return $this->invitations;
     }
 
-    public function setInvitations(ArrayCollection$invitations): void
+    public function setInvitations(Collection$invitations): void
     {
         $this->invitations = $invitations;
     }
